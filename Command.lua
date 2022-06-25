@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+--3Command.lua1
+=======
 --2Command.lua1
+>>>>>>> 1c868b13b0eab32268a938ac1c596cc95b0cd7e5
 function ToStringEx(value)
     if type(value)=='table' then
        return TableToStr(value)
