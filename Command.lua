@@ -1,4 +1,3 @@
---3Command.lua1
 function ToStringEx(value)
     if type(value)=='table' then
        return TableToStr(value)
@@ -8,7 +7,6 @@ function ToStringEx(value)
        return tostring(value)
     end
 end
-
 function TableToStr(t)
     if t == nil then return "" end
     local retstr= "{"
@@ -40,5 +38,290 @@ function TableToStr(t)
      retstr = retstr.."}"
      return retstr
 end
+function QwordToBinStr(InNum)
+    local SS = string.format("%016X",InNum)
+    local S1 = string.sub(SS,15,16)
+    local S2 = string.sub(SS,13,14)
+    local S3 = string.sub(SS,11,12)
+    local S4 = string.sub(SS,9,10)
+	local S5 = string.sub(SS,7,8)
+    local S6 = string.sub(SS,5,6)
+    local S7 = string.sub(SS,3,4)
+    local S8 = string.sub(SS,1,2)
+    local S0 = S1..S2..S3..S4..S5..S6..S7..S8
+    return S0
+end
+function DwordToBinStr(InNum)
+    local SS = string.format("%08X",InNum)
+    local S1 = string.sub(SS,7,8)
+    local S2 = string.sub(SS,5,6)
+    local S3 = string.sub(SS,3,4)
+    local S4 = string.sub(SS,1,2)
+    local S0 = S1..S2..S3..S4
+    return S0
+end
+function WordToBinStr(InNum)
+    local SS = string.format("%04X",InNum)
+    local S3 = string.sub(SS,3,4)
+    local S4 = string.sub(SS,1,2)
+    local S0 = S3..S4
+    return S0
+end
+function StrToBinStr(Com)
+    local RetNR = ''
+    for var=1, #Com, 1 do
+        local one = string.byte(Com,var)
+        RetNR = RetNR..string.format("%02X",one)
+    end
+    return RetNR
+end
+function Sleep(Num)
+    MySleep(Num)
+end
+function Calc2Distance(ax, ay, bx, by)
+	return math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by))
+end
+function Calc3Distance(ax, ay, az, bx, by, bz)
+	return math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by) + (az - bz) * (az - bz))
+end
 
-print('1234')
+----------------------------------游戏功能区
+function GoToMap(MapIndex)
+	SendData('0C0000005F000000'..DwordToBinStr(MapIndex))
+end
+
+function GoToFeiTian()
+	SendData('0D000000C10200000700000000')
+end
+
+function RepairAll(NpcID)
+    local Data = '1A0000005F010000' .. QwordToBinStr(NpcID) .. '00000000000000000003'
+	SendData(Data)
+end
+function RepairOne(NpcID,ItemID)
+    local Data = '1A0000005F010000' .. QwordToBinStr(NpcID) .. QwordToBinStr(ItemID)..'0001'
+	SendData(Data)
+end
+
+function PutOnItem(ItemID,Index)
+    local Data = '190000004300000000010100'..QwordToBinStr(ItemID)..DwordToBinStr(Index)..'00'
+	SendData(Data)
+end
+function PutUpItem(ItemID,Index)
+    local Data = '190000004300000001010100'..QwordToBinStr(ItemID)..DwordToBinStr(Index)..'00'
+	SendData(Data)
+end
+
+function GetMapID()
+    local Ret = {}
+    local LocalPlayer = 玩家数据()
+    Ret = LocalPlayer.MapID
+    return Ret
+end
+
+function IsOpenAutoCaiJi()
+    local Ret = {}
+    local LocalPlayer = 玩家数据()
+    Ret = LocalPlayer.IsOpenAutoCaiJi
+    return Ret
+end
+
+function GetOjb_XYZ(ObjName, X, Y, FanWei)
+    local Ret = {}
+	local 环境 = 环境数据()
+	for i, v in ipairs(环境) do
+        if v.ObjName == ObjName then
+            local Dis = Calc2Distance(X,Y,v.X,v.Y)
+            if Dis < FanWei then
+                Ret = v
+                break
+            end
+        end
+	end
+    return Ret
+end
+
+function GetEquipChiJiu(In_Index)
+    local Ret = {}
+    local 装备 = 装备数据()
+    for i, v in ipairs(装备) do
+        if v.Index == In_Index then
+            Ret = v.ChiJiu
+            break
+        end
+    end
+    return Ret
+end
+
+function MapNameToMapID(MapName)
+    local BuyData = {
+        ['银杏村'] = 101,
+        ['银杏村野外'] = 102,
+        ['飞天'] = 103,
+        ['飞天郊外'] = 104,
+        ['红名村'] = 111,
+        ['沃玛洞穴一层'] = 211,
+        ['飞天密谷一层'] = 1211,
+        ['飞天密谷二层'] = 1212,
+        ['飞天密谷三层'] = 1213,
+        ['飞天密谷四层'] = 1214,
+    }
+
+    local GetData = BuyData[MapName]
+    if GetData == nil then return 0 end
+    return GetData
+end
+function IsInMap(MapName)
+    local BuyData = {
+        ['银杏村'] = 101,
+        ['银杏村野外'] = 102,
+        ['飞天'] = 103,
+        ['飞天郊外'] = 104,
+        ['红名村'] = 111,
+        ['沃玛洞穴一层'] = 211,
+        ['飞天密谷一层'] = 1211,
+        ['飞天密谷二层'] = 1212,
+        ['飞天密谷三层'] = 1213,
+        ['飞天密谷四层'] = 1214,
+    }
+
+    local GetData = BuyData[MapName]
+    if GetData == nil then return false end
+    if GetData ~= GetMapID() then return false end
+    return true
+end
+
+function 获取距离目标距离(MX, MY, MZ)
+	local 玩家 = 玩家数据()
+	return Calc3Distance(玩家.X,玩家.Y,玩家.Z,MX,MY,MZ)
+end
+
+function 寻路_直到目标(MX, MY, MZ,超时)
+    超时 = 超时 or 20
+    local BeginTimer = os.time()
+	MovToXYZ(MX, MY, MZ)
+	while true do
+		--local 玩家 = 玩家数据()
+		--if 是否移动 == 0 then MovToXYZ(MX, MY, MZ) end
+        if 获取距离目标距离(MX,MY,MZ) < 150 then return end
+        if os.time() - BeginTimer > 超时 then return end
+		Sleep(500)
+	end
+end
+
+function 飞天修理全身装备_包裹锄头()
+    local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
+    --调试输出(TableToStr(Npc))
+    if next(Npc) ~= nil then
+        RepairAll(Npc.ID_NPC)
+        local 包裹 = 包裹数据()
+        for i, v in ipairs(包裹) do
+            if v.Type == 29521 and v.ChiJiu < 120 then
+                RepairOne(Npc.ID_NPC,v.ID)
+                Sleep(500)
+            end
+        end
+    end
+end
+
+function 是否可以挖矿(v,X,Y,FanWei)
+    if v.ObjName ~= 'Collect_BP_C' then return false end
+    if v.IsCanWaKuang == 0 then return false end
+    local Dis = Calc2Distance(X,Y,v.X,v.Y)
+    if Dis > FanWei then return false end
+    return true
+end
+
+function GetKuang_XYZ(X, Y, FanWei)
+    local Ret = {}
+	local 环境 = 环境数据()
+	for i, v in ipairs(环境) do
+        if 是否可以挖矿(v,X,Y,FanWei) == true then
+            Ret = v
+            break
+        end
+	end
+    return Ret
+end
+
+function 挖矿周围到没矿(范围)
+    while true do
+        local LocalPlayer =  玩家数据()
+        local kuang = GetKuang_XYZ(LocalPlayer.X,LocalPlayer.Y,范围)
+        if next(kuang) == nil then break end
+        --调试输出(TableToStr(kuang))
+        挖矿(kuang.ID)
+        Sleep(2000)
+    end
+end
+
+function 是否需要回城补充()
+    if GetEquipChiJiu(12) > 0 then return false end
+    local 包裹 = 包裹数据()
+    for i, v in ipairs(包裹) do
+        if v.ChiJiu > 0 then--可以加上换锄头
+            PutOnItem(v.ID,12)
+            return false
+        end
+    end
+    return true
+end
+
+function 瞬移卷进图(地图,点位)
+    local ALL = {
+        ['飞天密谷一层'] = {
+            ['1']='0D0000007B0000000E7C120001',
+            ['2']='0D0000007B0000000B7C120001',
+            ['3']='0D0000007B000000107C120001',
+            ['4']='0D0000007B0000000D7C120001',
+            ['5']='0D0000007B000000117C120001',
+            ['6']='0D0000007B0000000C7C120001',
+            ['7']='0D0000007B0000000F7C120001',
+            ['8']='0D0000007B000000127C120001',
+            ['9']='0D0000007B000000097C120001',
+            ['10']='0D0000007B0000000A7C120001',
+        },
+        ['飞天密谷二层'] = {},
+        ['飞天密谷三层'] = {},
+        ['飞天密谷四层'] = {},
+    }
+    local Data = ALL[地图][点位]
+	SendData(Data)
+end
+
+function 进图挖矿(地图,矿点)
+    if IsInMap(地图) == false then
+        瞬移卷进图(地图,矿点)
+        Sleep(10000)
+    end
+    if IsOpenAutoCaiJi() == 0 then
+        热键自动挖矿()
+    end
+
+end
+
+function 回城修理()
+    调试输出('<<<<回城修理>>>>')
+    GoToFeiTian()
+    Sleep(10000)
+    寻路_直到目标(16580,17560,5651)
+    飞天修理全身装备_包裹锄头()
+end
+
+
+function 自动挖矿(地图,矿点)
+    调试输出('<<<<自动挖矿开始>>>>')
+    local BeginTimer = os.time()
+    while true do
+
+        if os.time() - BeginTimer > 300 then break end
+
+        if 是否需要回城补充() == false then
+            进图挖矿(地图,矿点)
+        else
+            回城修理()
+        end
+
+        Sleep(500)
+    end
+end
