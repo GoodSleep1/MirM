@@ -1,4 +1,4 @@
---ä¸­æ–‡åº“
+--ÖĞÎÄ¿â2.0
 function ToStringEx(value)
     if type(value)=='table' then
        return TableToStr(value)
@@ -86,7 +86,7 @@ function Calc3Distance(ax, ay, az, bx, by, bz)
 	return math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by) + (az - bz) * (az - bz))
 end
 
-----------------------------------æ¸¸æˆåŠŸèƒ½åŒº
+----------------------------------ÓÎÏ·¹¦ÄÜÇø
 function GoToMap(MapIndex)
 	SendData('0C0000005F000000'..DwordToBinStr(MapIndex))
 end
@@ -115,22 +115,22 @@ end
 
 function GetMapID()
     local Ret = {}
-    local LocalPlayer = ç©å®¶æ•°æ®()
+    local LocalPlayer = Íæ¼ÒÊı¾İ()
     Ret = LocalPlayer.MapID
     return Ret
 end
 
 function IsOpenAutoCaiJi()
     local Ret = {}
-    local LocalPlayer = ç©å®¶æ•°æ®()
+    local LocalPlayer = Íæ¼ÒÊı¾İ()
     Ret = LocalPlayer.IsOpenAutoCaiJi
     return Ret
 end
 
 function GetOjb_XYZ(ObjName, X, Y, FanWei)
     local Ret = {}
-	local ç¯å¢ƒ = ç¯å¢ƒæ•°æ®()
-	for i, v in ipairs(ç¯å¢ƒ) do
+	local »·¾³ = »·¾³Êı¾İ()
+	for i, v in ipairs(»·¾³) do
         if v.ObjName == ObjName then
             local Dis = Calc2Distance(X,Y,v.X,v.Y)
             if Dis < FanWei then
@@ -144,8 +144,8 @@ end
 
 function GetEquipChiJiu(In_Index)
     local Ret = {}
-    local è£…å¤‡ = è£…å¤‡æ•°æ®()
-    for i, v in ipairs(è£…å¤‡) do
+    local ×°±¸ = ×°±¸Êı¾İ()
+    for i, v in ipairs(×°±¸) do
         if v.Index == In_Index then
             Ret = v.ChiJiu
             break
@@ -156,16 +156,16 @@ end
 
 function MapNameToMapID(MapName)
     local BuyData = {
-        ['é“¶ææ‘'] = 101,
-        ['é“¶ææ‘é‡å¤–'] = 102,
-        ['é£å¤©'] = 103,
-        ['é£å¤©éƒŠå¤–'] = 104,
-        ['çº¢åæ‘'] = 111,
-        ['æ²ƒç›æ´ç©´ä¸€å±‚'] = 211,
-        ['é£å¤©å¯†è°·ä¸€å±‚'] = 1211,
-        ['é£å¤©å¯†è°·äºŒå±‚'] = 1212,
-        ['é£å¤©å¯†è°·ä¸‰å±‚'] = 1213,
-        ['é£å¤©å¯†è°·å››å±‚'] = 1214,
+        ['ÒøĞÓ´å'] = 101,
+        ['ÒøĞÓ´åÒ°Íâ'] = 102,
+        ['·ÉÌì'] = 103,
+        ['·ÉÌì½¼Íâ'] = 104,
+        ['ºìÃû´å'] = 111,
+        ['ÎÖÂê¶´Ñ¨Ò»²ã'] = 211,
+        ['·ÉÌìÃÜ¹ÈÒ»²ã'] = 1211,
+        ['·ÉÌìÃÜ¹È¶ş²ã'] = 1212,
+        ['·ÉÌìÃÜ¹ÈÈı²ã'] = 1213,
+        ['·ÉÌìÃÜ¹ÈËÄ²ã'] = 1214,
     }
 
     local GetData = BuyData[MapName]
@@ -174,16 +174,16 @@ function MapNameToMapID(MapName)
 end
 function IsInMap(MapName)
     local BuyData = {
-        ['é“¶ææ‘'] = 101,
-        ['é“¶ææ‘é‡å¤–'] = 102,
-        ['é£å¤©'] = 103,
-        ['é£å¤©éƒŠå¤–'] = 104,
-        ['çº¢åæ‘'] = 111,
-        ['æ²ƒç›æ´ç©´ä¸€å±‚'] = 211,
-        ['é£å¤©å¯†è°·ä¸€å±‚'] = 1211,
-        ['é£å¤©å¯†è°·äºŒå±‚'] = 1212,
-        ['é£å¤©å¯†è°·ä¸‰å±‚'] = 1213,
-        ['é£å¤©å¯†è°·å››å±‚'] = 1214,
+        ['ÒøĞÓ´å'] = 101,
+        ['ÒøĞÓ´åÒ°Íâ'] = 102,
+        ['·ÉÌì'] = 103,
+        ['·ÉÌì½¼Íâ'] = 104,
+        ['ºìÃû´å'] = 111,
+        ['ÎÖÂê¶´Ñ¨Ò»²ã'] = 211,
+        ['·ÉÌìÃÜ¹ÈÒ»²ã'] = 1211,
+        ['·ÉÌìÃÜ¹È¶ş²ã'] = 1212,
+        ['·ÉÌìÃÜ¹ÈÈı²ã'] = 1213,
+        ['·ÉÌìÃÜ¹ÈËÄ²ã'] = 1214,
     }
 
     local GetData = BuyData[MapName]
@@ -192,31 +192,31 @@ function IsInMap(MapName)
     return true
 end
 
-function è·å–è·ç¦»ç›®æ ‡è·ç¦»(MX, MY, MZ)
-	local ç©å®¶ = ç©å®¶æ•°æ®()
-	return Calc3Distance(ç©å®¶.X,ç©å®¶.Y,ç©å®¶.Z,MX,MY,MZ)
+function »ñÈ¡¾àÀëÄ¿±ê¾àÀë(MX, MY, MZ)
+	local Íæ¼Ò = Íæ¼ÒÊı¾İ()
+	return Calc3Distance(Íæ¼Ò.X,Íæ¼Ò.Y,Íæ¼Ò.Z,MX,MY,MZ)
 end
 
-function å¯»è·¯_ç›´åˆ°ç›®æ ‡(MX, MY, MZ,è¶…æ—¶)
-    è¶…æ—¶ = è¶…æ—¶ or 20
+function Ñ°Â·_Ö±µ½Ä¿±ê(MX, MY, MZ,³¬Ê±)
+    ³¬Ê± = ³¬Ê± or 20
     local BeginTimer = os.time()
 	MovToXYZ(MX, MY, MZ)
 	while true do
-		--local ç©å®¶ = ç©å®¶æ•°æ®()
-		--if æ˜¯å¦ç§»åŠ¨ == 0 then MovToXYZ(MX, MY, MZ) end
-        if è·å–è·ç¦»ç›®æ ‡è·ç¦»(MX,MY,MZ) < 150 then return end
-        if os.time() - BeginTimer > è¶…æ—¶ then return end
+		--local Íæ¼Ò = Íæ¼ÒÊı¾İ()
+		--if ÊÇ·ñÒÆ¶¯ == 0 then MovToXYZ(MX, MY, MZ) end
+        if »ñÈ¡¾àÀëÄ¿±ê¾àÀë(MX,MY,MZ) < 150 then return end
+        if os.time() - BeginTimer > ³¬Ê± then return end
 		Sleep(500)
 	end
 end
 
-function é£å¤©ä¿®ç†å…¨èº«è£…å¤‡_åŒ…è£¹é”„å¤´()
+function ·ÉÌìĞŞÀíÈ«Éí×°±¸_°ü¹ü³úÍ·()
     local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
-    --è°ƒè¯•è¾“å‡º(TableToStr(Npc))
+    --µ÷ÊÔÊä³ö(TableToStr(Npc))
     if next(Npc) ~= nil then
         RepairAll(Npc.ID_NPC)
-        local åŒ…è£¹ = åŒ…è£¹æ•°æ®()
-        for i, v in ipairs(åŒ…è£¹) do
+        local °ü¹ü = °ü¹üÊı¾İ()
+        for i, v in ipairs(°ü¹ü) do
             if v.Type == 29521 and v.ChiJiu < 120 then
                 RepairOne(Npc.ID_NPC,v.ID)
                 Sleep(500)
@@ -225,7 +225,7 @@ function é£å¤©ä¿®ç†å…¨èº«è£…å¤‡_åŒ…è£¹é”„å¤´()
     end
 end
 
-function æ˜¯å¦å¯ä»¥æŒ–çŸ¿(v,X,Y,FanWei)
+function ÊÇ·ñ¿ÉÒÔÍÚ¿ó(v,X,Y,FanWei)
     if v.ObjName ~= 'Collect_BP_C' then return false end
     if v.IsCanWaKuang == 0 then return false end
     local Dis = Calc2Distance(X,Y,v.X,v.Y)
@@ -235,9 +235,9 @@ end
 
 function GetKuang_XYZ(X, Y, FanWei)
     local Ret = {}
-	local ç¯å¢ƒ = ç¯å¢ƒæ•°æ®()
-	for i, v in ipairs(ç¯å¢ƒ) do
-        if æ˜¯å¦å¯ä»¥æŒ–çŸ¿(v,X,Y,FanWei) == true then
+	local »·¾³ = »·¾³Êı¾İ()
+	for i, v in ipairs(»·¾³) do
+        if ÊÇ·ñ¿ÉÒÔÍÚ¿ó(v,X,Y,FanWei) == true then
             Ret = v
             break
         end
@@ -245,22 +245,22 @@ function GetKuang_XYZ(X, Y, FanWei)
     return Ret
 end
 
-function æŒ–çŸ¿å‘¨å›´åˆ°æ²¡çŸ¿(èŒƒå›´)
+function ÍÚ¿óÖÜÎ§µ½Ã»¿ó(·¶Î§)
     while true do
-        local LocalPlayer =  ç©å®¶æ•°æ®()
-        local kuang = GetKuang_XYZ(LocalPlayer.X,LocalPlayer.Y,èŒƒå›´)
+        local LocalPlayer =  Íæ¼ÒÊı¾İ()
+        local kuang = GetKuang_XYZ(LocalPlayer.X,LocalPlayer.Y,·¶Î§)
         if next(kuang) == nil then break end
-        --è°ƒè¯•è¾“å‡º(TableToStr(kuang))
-        æŒ–çŸ¿(kuang.ID)
+        --µ÷ÊÔÊä³ö(TableToStr(kuang))
+        ÍÚ¿ó(kuang.ID)
         Sleep(2000)
     end
 end
 
-function æ˜¯å¦éœ€è¦å›åŸè¡¥å……()
+function ÊÇ·ñĞèÒª»Ø³Ç²¹³ä()
     if GetEquipChiJiu(12) > 0 then return false end
-    local åŒ…è£¹ = åŒ…è£¹æ•°æ®()
-    for i, v in ipairs(åŒ…è£¹) do
-        if v.ChiJiu > 0 then--å¯ä»¥åŠ ä¸Šæ¢é”„å¤´
+    local °ü¹ü = °ü¹üÊı¾İ()
+    for i, v in ipairs(°ü¹ü) do
+        if v.ChiJiu > 0 then--¿ÉÒÔ¼ÓÉÏ»»³úÍ·
             PutOnItem(v.ID,12)
             return false
         end
@@ -268,9 +268,9 @@ function æ˜¯å¦éœ€è¦å›åŸè¡¥å……()
     return true
 end
 
-function ç¬ç§»å·è¿›å›¾(åœ°å›¾,ç‚¹ä½)
+function Ë²ÒÆ¾í½øÍ¼(µØÍ¼,µãÎ»)
     local ALL = {
-        ['é£å¤©å¯†è°·ä¸€å±‚'] = {
+        ['·ÉÌìÃÜ¹ÈÒ»²ã'] = {
             ['1']='0D0000007B0000000E7C120001',
             ['2']='0D0000007B0000000B7C120001',
             ['3']='0D0000007B000000107C120001',
@@ -282,47 +282,91 @@ function ç¬ç§»å·è¿›å›¾(åœ°å›¾,ç‚¹ä½)
             ['9']='0D0000007B000000097C120001',
             ['10']='0D0000007B0000000A7C120001',
         },
-        ['é£å¤©å¯†è°·äºŒå±‚'] = {},
-        ['é£å¤©å¯†è°·ä¸‰å±‚'] = {},
-        ['é£å¤©å¯†è°·å››å±‚'] = {},
+        ['·ÉÌìÃÜ¹È¶ş²ã'] = {},
+        ['·ÉÌìÃÜ¹ÈÈı²ã'] = {},
+        ['·ÉÌìÃÜ¹ÈËÄ²ã'] = {},
     }
-    local Data = ALL[åœ°å›¾][ç‚¹ä½]
+    local Data = ALL[µØÍ¼][µãÎ»]
 	SendData(Data)
 end
 
-function è¿›å›¾æŒ–çŸ¿(åœ°å›¾,çŸ¿ç‚¹)
-    if IsInMap(åœ°å›¾) == false then
-        ç¬ç§»å·è¿›å›¾(åœ°å›¾,çŸ¿ç‚¹)
+function ½øÍ¼ÍÚ¿ó(µØÍ¼,¿óµã)
+    if IsInMap(µØÍ¼) == false then
+        Ë²ÒÆ¾í½øÍ¼(µØÍ¼,¿óµã)
         Sleep(10000)
     end
     if IsOpenAutoCaiJi() == 0 then
-        çƒ­é”®è‡ªåŠ¨æŒ–çŸ¿()
+        ÈÈ¼ü×Ô¶¯ÍÚ¿ó()
     end
 
 end
 
-function å›åŸä¿®ç†()
-    è°ƒè¯•è¾“å‡º('<<<<å›åŸä¿®ç†>>>>')
+function »Ø³ÇĞŞÀí()
+    µ÷ÊÔÊä³ö('<<<<»Ø³ÇĞŞÀí>>>>')
     GoToFeiTian()
     Sleep(10000)
-    å¯»è·¯_ç›´åˆ°ç›®æ ‡(16580,17560,5651)
-    é£å¤©ä¿®ç†å…¨èº«è£…å¤‡_åŒ…è£¹é”„å¤´()
+    Ñ°Â·_Ö±µ½Ä¿±ê(16580,17560,5651)
+    ·ÉÌìĞŞÀíÈ«Éí×°±¸_°ü¹ü³úÍ·()
 end
 
 
-function è‡ªåŠ¨æŒ–çŸ¿(åœ°å›¾,çŸ¿ç‚¹)
-    è°ƒè¯•è¾“å‡º('<<<<è‡ªåŠ¨æŒ–çŸ¿å¼€å§‹>>>>')
+function ×Ô¶¯ÍÚ¿ó(µØÍ¼,¿óµã)
+    µ÷ÊÔÊä³ö('<<<<×Ô¶¯ÍÚ¿ó¿ªÊ¼>>>>')
     local BeginTimer = os.time()
     while true do
 
         if os.time() - BeginTimer > 300 then break end
 
-        if æ˜¯å¦éœ€è¦å›åŸè¡¥å……() == false then
-            è¿›å›¾æŒ–çŸ¿(åœ°å›¾,çŸ¿ç‚¹)
+        if ÊÇ·ñĞèÒª»Ø³Ç²¹³ä() == false then
+            ½øÍ¼ÍÚ¿ó(µØÍ¼,¿óµã)
         else
-            å›åŸä¿®ç†()
+            »Ø³ÇĞŞÀí()
         end
 
         Sleep(500)
     end
 end
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+µ÷ÊÔÊä³ö('<<<<×Ô¶¯ÍÚ¿ó¿ªÊ¼>>>>')
+
+
+
+
+--×Ô¶¯ÍÚ¿ó('·ÉÌìÃÜ¹ÈÒ»²ã','1')
+
+local INI = GetIniInfo()
+µ÷ÊÔÊä³ö(TableToStr(INI))
+
+
+
+
+µ÷ÊÔÊä³ö('<<<<½Å±¾Ö´ĞĞÍê±Ï>>>>')
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-- local LP =  Íæ¼ÒÊı¾İ()
+-- µ÷ÊÔÊä³ö(TableToStr(LP))
+
+-- local »·¾³ = »·¾³Êı¾İ()
+-- for i, v in ipairs(»·¾³) do
+--     µ÷ÊÔÊä³ö(TableToStr(v))
+-- end
+
+-- local °ü¹ü = °ü¹üÊı¾İ()
+-- for i, v in ipairs(°ü¹ü) do
+--     µ÷ÊÔÊä³ö(TableToStr(v))
+-- end
+
+--MovToXYZ(23450,20790,4319)
+--ÍÚ¿ó(0xE083992E8DD9C4C)
+--µ÷ÊÔÊä³ö(tostring(GetEquipChiJiu(12)))
+--·ÉÌìĞŞÀíÈ«Éí×°±¸()
+
+
+
