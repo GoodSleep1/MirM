@@ -100,7 +100,7 @@ function RepairAll(NpcID)
 	SendData(Data)
 end
 function RepairOne(NpcID,ItemID)
-    local Data = '1A0000005F010000' .. QwordToBinStr(NpcID) .. QwordToBinStr(ItemID)..'0001'
+    local Data = '1A0000005F010000' .. QwordToBinStr(NpcID) .. QwordToBinStr(ItemID)..'0101'
 	SendData(Data)
 end
 
@@ -212,14 +212,15 @@ end
 
 function 飞天修理全身装备_包裹锄头()
     local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
-    --调试输出(TableToStr(Npc))
     if next(Npc) ~= nil then
         RepairAll(Npc.ID_NPC)
         local 包裹 = 包裹数据()
         for i, v in ipairs(包裹) do
-            if v.Type == 29521 and v.ChiJiu < 120 then
-                RepairOne(Npc.ID_NPC,v.ID)
-                Sleep(500)
+            if v.Type == 29521 or v.Type == 29522 or v.Type == 29523 then
+                if v.ChiJiu < 120 then
+                    RepairOne(Npc.ID_NPC,v.ID)
+                    Sleep(500)
+                end
             end
         end
     end
