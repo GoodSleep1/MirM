@@ -1,3 +1,4 @@
+--中文库
 function ToStringEx(value)
     if type(value)=='table' then
        return TableToStr(value)
