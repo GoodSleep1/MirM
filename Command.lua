@@ -76,25 +76,25 @@ function StrToBinStr(Com)
     end
     return RetNR
 end
-function Sleep(Num)
-    MySleep(Num)
-end
 function Calc2Distance(ax, ay, bx, by)
 	return math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by))
 end
 function Calc3Distance(ax, ay, az, bx, by, bz)
 	return math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by) + (az - bz) * (az - bz))
 end
-
-----------------------------------游戏功能区
-function GoToMap(MapIndex)
-	SendData('0C0000005F000000'..DwordToBinStr(MapIndex))
+function Sleep(Num)
+    MySleep(Num)
 end
-
+--GameAbout
+function GoToMap(MapIndex)
+	SendData('0C0000005F000000' .. DwordToBinStr(MapIndex))
+end
 function GoToFeiTian()
 	SendData('0D000000C10200000700000000')
 end
-
+function ReviveToFetTian()
+    SendData('1100000079000000020000000000000000')
+end
 function RepairAll(NpcID)
     local Data = '1A0000005F010000' .. QwordToBinStr(NpcID) .. '00000000000000000003'
 	SendData(Data)
@@ -103,7 +103,6 @@ function RepairOne(NpcID,ItemID)
     local Data = '1A0000005F010000' .. QwordToBinStr(NpcID) .. QwordToBinStr(ItemID)..'0101'
 	SendData(Data)
 end
-
 function PutOnItem(ItemID,Index)
     local Data = '190000004300000000010100'..QwordToBinStr(ItemID)..DwordToBinStr(Index)..'00'
 	SendData(Data)
@@ -112,21 +111,25 @@ function PutUpItem(ItemID,Index)
     local Data = '190000004300000001010100'..QwordToBinStr(ItemID)..DwordToBinStr(Index)..'00'
 	SendData(Data)
 end
-
 function GetMapID()
     local Ret = {}
     local LocalPlayer = 玩家数据()
     Ret = LocalPlayer.MapID
     return Ret
 end
-
 function IsOpenAutoCaiJi()
     local Ret = {}
     local LocalPlayer = 玩家数据()
     Ret = LocalPlayer.IsOpenAutoCaiJi
     return Ret
 end
-
+function IsDie()
+    local LocalPlayer = 玩家数据()
+    if LocalPlayer.HP == 0 then
+        return true
+    end
+    return false
+end
 function GetOjb_XYZ(ObjName, X, Y, FanWei)
     local Ret = {}
 	local 环境 = 环境数据()
@@ -141,7 +144,6 @@ function GetOjb_XYZ(ObjName, X, Y, FanWei)
 	end
     return Ret
 end
-
 function GetEquipChiJiu(In_Index)
     local Ret = {}
     local 装备 = 装备数据()
@@ -153,9 +155,8 @@ function GetEquipChiJiu(In_Index)
     end
     return Ret
 end
-
 function MapNameToMapID(MapName)
-    local BuyData = {
+    local DataInfo = {
         ['银杏村'] = 101,
         ['银杏村野外'] = 102,
         ['飞天'] = 103,
@@ -167,13 +168,12 @@ function MapNameToMapID(MapName)
         ['飞天密谷三层'] = 1213,
         ['飞天密谷四层'] = 1214,
     }
-
-    local GetData = BuyData[MapName]
+    local GetData = DataInfo[MapName]
     if GetData == nil then return 0 end
     return GetData
 end
 function IsInMap(MapName)
-    local BuyData = {
+    local DataInfo = {
         ['银杏村'] = 101,
         ['银杏村野外'] = 102,
         ['飞天'] = 103,
@@ -186,7 +186,7 @@ function IsInMap(MapName)
         ['飞天密谷四层'] = 1214,
     }
 
-    local GetData = BuyData[MapName]
+    local GetData = DataInfo[MapName]
     if GetData == nil then return false end
     if GetData ~= GetMapID() then return false end
     return true
@@ -202,28 +202,41 @@ function 寻路_直到目标(MX, MY, MZ,超时)
     local BeginTimer = os.time()
 	MovToXYZ(MX, MY, MZ)
 	while true do
-		--local 玩家 = 玩家数据()
-		--if 是否移动 == 0 then MovToXYZ(MX, MY, MZ) end
+        if IsDie() == true then break end
         if 获取距离目标距离(MX,MY,MZ) < 150 then return end
         if os.time() - BeginTimer > 超时 then return end
 		Sleep(500)
 	end
 end
 
+function 判断是否是锄头(v)
+    if next(v) == nil then return false end
+    if v.Type == 29521 then return true end
+    if v.Type == 29522 then return true end
+    if v.Type == 29523 then return true end
+    return false
+end
+
+function 飞天修理包裹锄头()
+    local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
+    if next(Npc) ~= nil then return end
+    local 包裹 = 包裹数据()
+    for i, v in ipairs(包裹) do
+        if 判断是否是锄头(v) == true then
+            if v.ChiJiu < 120 then
+                RepairOne(Npc.ID_NPC,v.ID)
+                Sleep(500)
+            end
+        end
+    end
+end
+
 function 飞天修理全身装备_包裹锄头()
     local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
     if next(Npc) ~= nil then
         RepairAll(Npc.ID_NPC)
-        local 包裹 = 包裹数据()
-        for i, v in ipairs(包裹) do
-            if v.Type == 29521 or v.Type == 29522 or v.Type == 29523 then
-                if v.ChiJiu < 120 then
-                    RepairOne(Npc.ID_NPC,v.ID)
-                    Sleep(500)
-                end
-            end
-        end
     end
+    飞天修理包裹锄头()
 end
 
 function 是否可以挖矿(v,X,Y,FanWei)
@@ -234,7 +247,7 @@ function 是否可以挖矿(v,X,Y,FanWei)
     return true
 end
 
-function GetKuang_XYZ(X, Y, FanWei)
+function 获得坐标范围可挖对象(X, Y, FanWei)
     local Ret = {}
 	local 环境 = 环境数据()
 	for i, v in ipairs(环境) do
@@ -246,10 +259,13 @@ function GetKuang_XYZ(X, Y, FanWei)
     return Ret
 end
 
-function 挖矿周围到没矿(范围)
+function 挖矿周围到没矿(范围,超时)
+    local BeginTimer = os.time()
     while true do
+        if os.time() - BeginTimer > 超时 then break end
+        if IsDie() == true then break end
         local LocalPlayer =  玩家数据()
-        local kuang = GetKuang_XYZ(LocalPlayer.X,LocalPlayer.Y,范围)
+        local kuang = 获得坐标范围可挖对象(LocalPlayer.X,LocalPlayer.Y,范围)
         if next(kuang) == nil then break end
         --调试输出(TableToStr(kuang))
         挖矿(kuang.ID)
@@ -259,11 +275,13 @@ end
 
 function 是否需要回城补充()
     if GetEquipChiJiu(12) > 0 then return false end
-    local 包裹 = 包裹数据()
+    local 包裹 = 包裹数据()--到这里说明手中没持久了
     for i, v in ipairs(包裹) do
-        if v.ChiJiu > 0 then--可以加上换锄头
-            PutOnItem(v.ID,12)
-            return false
+        if 判断是否是锄头(v) == true then
+            if v.ChiJiu > 0 then
+                PutOnItem(v.ID,12)--穿装备
+                return false
+            end
         end
     end
     return true
@@ -292,6 +310,8 @@ function 瞬移卷进图(地图,点位)
 end
 
 function 进图挖矿(地图,矿点)
+    if 是否需要回城补充() == true then return end
+    if IsDie() == true then return end
     if IsInMap(地图) == false then
         瞬移卷进图(地图,矿点)
         Sleep(10000)
@@ -299,15 +319,23 @@ function 进图挖矿(地图,矿点)
     if IsOpenAutoCaiJi() == 0 then
         热键自动挖矿()
     end
-
 end
 
-function 回城修理()
+function 检测回城()
+    if 是否需要回城补充() == false then return end
     调试输出('<<<<回城修理>>>>')
     GoToFeiTian()
     Sleep(10000)
     寻路_直到目标(16580,17560,5651)
     飞天修理全身装备_包裹锄头()
+    Sleep(1000)
+end
+
+function 检测死亡()
+    if IsDie() == false then return end
+    调试输出('<<<<复活回城>>>>')
+    ReviveToFetTian()
+    Sleep(1000)
 end
 
 
@@ -318,16 +346,18 @@ function 自动挖矿(地图,矿点)
 
         if os.time() - BeginTimer > 300 then break end
 
-        if 是否需要回城补充() == false then
-            进图挖矿(地图,矿点)
-        else
-            回城修理()
-        end
+        检测回城()
+
+        检测死亡()
+
+        进图挖矿(地图,矿点)
 
         Sleep(500)
     end
+
 end
 
-
-
+function 远程挖矿(超时)
+    挖矿周围到没矿(超时)
+end
 
