@@ -326,7 +326,6 @@ function 瞬移卷进图(地图,点位)
         ['飞天密谷四层'] = {},
     }
     local Data = ALL[地图][点位]
-    调试输出(Data)
 	SendData(Data)
 end
 
