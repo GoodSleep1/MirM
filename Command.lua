@@ -335,7 +335,7 @@ function 检测死亡()
     if IsDie() == false then return end
     调试输出('<<<<复活回城>>>>')
     ReviveToFetTian()
-    Sleep(1000)
+    Sleep(10000)
 end
 
 
