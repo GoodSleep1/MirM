@@ -111,6 +111,15 @@ function PutUpItem(ItemID,Index)
     local Data = '190000004300000001010100'..QwordToBinStr(ItemID)..DwordToBinStr(Index)..'00'
 	SendData(Data)
 end
+function CaiJiBegin(ItemID)
+    local Data = '1100000073000000'..QwordToBinStr(ItemID)..'01'
+	SendData(Data)
+end
+function CaiJiEnd(ItemID)
+    local Data = '1100000073000000'..QwordToBinStr(ItemID)..'02'
+	SendData(Data)
+end
+--LogicMini
 function GetMapID()
     local Ret = {}
     local LocalPlayer = 玩家数据()
@@ -261,6 +270,7 @@ end
 
 function 挖矿周围到没矿(范围,超时)
     local BeginTimer = os.time()
+    local 挖矿时间 = 0
     while true do
         if os.time() - BeginTimer > 超时 then break end
         if IsDie() == true then break end
@@ -268,7 +278,16 @@ function 挖矿周围到没矿(范围,超时)
         local kuang = 获得坐标范围可挖对象(LocalPlayer.X,LocalPlayer.Y,范围)
         if next(kuang) == nil then break end
         --调试输出(TableToStr(kuang))
-        挖矿(kuang.ID)
+        if 挖矿时间 == 0 then
+            CaiJiBegin(kuang.ID)
+            挖矿时间 = os.time()
+        else
+            if os.time() - 挖矿时间 > 10 then
+                CaiJiEnd(kuang.ID)
+                挖矿时间 = 0
+            end
+        end
+        --挖矿(kuang.ID)
         Sleep(2000)
     end
 end
