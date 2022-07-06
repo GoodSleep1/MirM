@@ -268,11 +268,26 @@ function 获得坐标范围可挖对象(X, Y, FanWei)
     return Ret
 end
 
+function 是否需要回城补充()
+    if GetEquipChiJiu(12) > 0 then return false end
+    local 包裹 = 包裹数据()--到这里说明手中没持久了
+    for i, v in ipairs(包裹) do
+        if 判断是否是锄头(v) == true then
+            if v.ChiJiu > 0 then
+                PutOnItem(v.ID,12)--穿装备
+                return false
+            end
+        end
+    end
+    return true
+end
+
 function 挖矿周围到没矿(范围,超时)
     local BeginTimer = os.time()
     local 挖矿时间 = 0
     while true do
         if os.time() - BeginTimer > 超时 then break end
+        if 是否需要回城补充() == true then return end
         if IsDie() == true then break end
         local LocalPlayer =  玩家数据()
         local kuang = 获得坐标范围可挖对象(LocalPlayer.X,LocalPlayer.Y,范围)
@@ -290,20 +305,6 @@ function 挖矿周围到没矿(范围,超时)
         --挖矿(kuang.ID)
         Sleep(2000)
     end
-end
-
-function 是否需要回城补充()
-    if GetEquipChiJiu(12) > 0 then return false end
-    local 包裹 = 包裹数据()--到这里说明手中没持久了
-    for i, v in ipairs(包裹) do
-        if 判断是否是锄头(v) == true then
-            if v.ChiJiu > 0 then
-                PutOnItem(v.ID,12)--穿装备
-                return false
-            end
-        end
-    end
-    return true
 end
 
 function 瞬移卷进图(地图,点位)
