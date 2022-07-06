@@ -1,4 +1,4 @@
---中文库2.0
+--中文库2.1
 function ToStringEx(value)
     if type(value)=='table' then
        return TableToStr(value)
@@ -338,7 +338,6 @@ function 检测死亡()
     Sleep(10000)
 end
 
-
 function 自动挖矿(地图,矿点)
     调试输出('<<<<自动挖矿开始>>>>')
     local BeginTimer = os.time()
@@ -358,6 +357,6 @@ function 自动挖矿(地图,矿点)
 end
 
 function 远程挖矿(超时)
-    挖矿周围到没矿(超时)
+    挖矿周围到没矿(400,超时)
 end
 
