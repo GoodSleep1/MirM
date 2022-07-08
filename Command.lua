@@ -228,7 +228,7 @@ end
 
 function 飞天修理包裹锄头()
     local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
-    if next(Npc) ~= nil then return end
+    if next(Npc) == nil then return end
     local 包裹 = 包裹数据()
     for i, v in ipairs(包裹) do
         if 判断是否是锄头(v) == true then
