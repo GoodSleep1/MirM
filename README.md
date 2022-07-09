@@ -13,14 +13,12 @@ end
 function TableToStr(t)
     if t == nil then return "" end
     local retstr= "{"
-
     local i = 1
     for key,value in pairs(t) do
         local signal = ","
         if i==1 then
           signal = ""
         end
-
         if key == i then
             retstr = retstr..signal..ToStringEx(value)
         else
@@ -34,10 +32,8 @@ function TableToStr(t)
                 end
             end
         end
-
         i = i+1
     end
-
      retstr = retstr.."}"
      return retstr
 end
@@ -196,7 +192,6 @@ function IsInMap(MapName)
         ['飞天密谷三层'] = 1213,
         ['飞天密谷四层'] = 1214,
     }
-
     local GetData = DataInfo[MapName]
     if GetData == nil then return false end
     if GetData ~= GetMapID() then return false end
