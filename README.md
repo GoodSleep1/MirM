@@ -197,12 +197,10 @@ function IsInMap(MapName)
     if GetData ~= GetMapID() then return false end
     return true
 end
-
 function 获取距离目标距离(MX, MY, MZ)
 	local 玩家 = 玩家数据()
 	return Calc3Distance(玩家.X,玩家.Y,玩家.Z,MX,MY,MZ)
 end
-
 function 寻路_直到目标(MX, MY, MZ,超时)
     超时 = 超时 or 20
     local BeginTimer = os.time()
@@ -214,7 +212,6 @@ function 寻路_直到目标(MX, MY, MZ,超时)
 		Sleep(500)
 	end
 end
-
 function 判断是否是锄头(v)
     if next(v) == nil then return false end
     if v.Type == 29521 then return true end
@@ -222,7 +219,6 @@ function 判断是否是锄头(v)
     if v.Type == 29523 then return true end
     return false
 end
-
 function 飞天修理包裹锄头()
     local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
     if next(Npc) == nil then return end
@@ -236,7 +232,6 @@ function 飞天修理包裹锄头()
         end
     end
 end
-
 function 飞天修理全身装备_包裹锄头()
     local Npc = GetOjb_XYZ('NPC_BP_C',17278,18281,1000)
     if next(Npc) ~= nil then
@@ -244,7 +239,6 @@ function 飞天修理全身装备_包裹锄头()
     end
     飞天修理包裹锄头()
 end
-
 function 是否可以挖矿(v,X,Y,FanWei)
     if v.ObjName ~= 'Collect_BP_C' then return false end
     if v.IsCanWaKuang == 0 then return false end
@@ -252,7 +246,6 @@ function 是否可以挖矿(v,X,Y,FanWei)
     if Dis > FanWei then return false end
     return true
 end
-
 function 获得坐标范围可挖对象(X, Y, FanWei)
     local Ret = {}
 	local 环境 = 环境数据()
@@ -264,7 +257,6 @@ function 获得坐标范围可挖对象(X, Y, FanWei)
 	end
     return Ret
 end
-
 function 是否需要回城补充()
     if GetEquipChiJiu(12) > 0 then return false end
     local 包裹 = 包裹数据()--到这里说明手中没持久了
@@ -278,7 +270,6 @@ function 是否需要回城补充()
     end
     return true
 end
-
 function 挖矿周围到没矿(范围,超时)
     local BeginTimer = os.time()
     local 挖矿时间 = 0
@@ -303,7 +294,6 @@ function 挖矿周围到没矿(范围,超时)
         Sleep(2000)
     end
 end
-
 function 瞬移卷进图(地图,点位)
     local ALL = {
         ['飞天密谷一层'] = {
@@ -325,7 +315,6 @@ function 瞬移卷进图(地图,点位)
     local Data = ALL[地图][点位]
 	SendData(Data)
 end
-
 function 进图挖矿(地图,矿点)
     if 是否需要回城补充() == true then return end
     if IsDie() == true then return end
@@ -337,7 +326,6 @@ function 进图挖矿(地图,矿点)
         热键自动挖矿()
     end
 end
-
 function 检测回城()
     if 是否需要回城补充() == false then return end
     调试输出('<<<<回城修理>>>>')
@@ -347,32 +335,23 @@ function 检测回城()
     飞天修理全身装备_包裹锄头()
     Sleep(1000)
 end
-
 function 检测死亡()
     if IsDie() == false then return end
     调试输出('<<<<复活回城>>>>')
     ReviveToFetTian()
     Sleep(10000)
 end
-
 function 自动挖矿(地图,矿点)
     调试输出('<<<<自动挖矿开始>>>>')
     local BeginTimer = os.time()
     while true do
-
         if os.time() - BeginTimer > 300 then break end
-
         检测回城()
-
         检测死亡()
-
         进图挖矿(地图,矿点)
-
         Sleep(500)
     end
-
 end
-
 function 远程挖矿(超时)
     挖矿周围到没矿(800,超时)
 end
